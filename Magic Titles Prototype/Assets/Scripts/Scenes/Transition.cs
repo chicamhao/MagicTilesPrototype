@@ -21,7 +21,7 @@ namespace Apps.Runtime.Scenes
 
         public static void Exit()
         {
-            //UnityEngine.Application.Quit();
+            UnityEngine.Application.Quit();
         }
     }
 

@@ -18,7 +18,6 @@ namespace Apps.Runtime.Interators
         [Header("Audio analysis & synchronous algorithms")]
         [SerializeField] AudioSource _audioSource;
         [SerializeField] SyncProvider _syncProvider;
-        [SerializeField] SyncType _syncType;
 
         LevelDesignData _levelDesign;
         TileInputHandler _tileInputHandler;
@@ -34,7 +33,7 @@ namespace Apps.Runtime.Interators
             _audioSource.Play();
 
             // get the synchronize algorithm.
-            _syncProvider.Provide(_syncType)
+            _syncProvider.Provide(levelDesign.SyncType)
                 // synchronize title spawning with the music.
                 .Initialize(_audioSource, _levelDesign,
                     SpawnTile, _amplitudeVisualizer.Animate);

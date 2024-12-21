@@ -5,7 +5,6 @@ namespace Apps.Runtime.Views
     // for dynamic background.
     public sealed class AmplitudeVisualizer : MonoBehaviour
     {
-        [Header("Effect Settings")]
         [SerializeField] Transform _decorateObject;
         [SerializeField] float _maxScale = 1.5f;
         [SerializeField] float _lerpSpeed = 5f;
