@@ -506,6 +506,7 @@ MonoBehaviour:
   _gameplay: {fileID: 1388886772}
   _levelDesign: {fileID: 11400000, guid: ef7b7ffbb9a9e47fc852672ac5f9c1ab, type: 2}
   _titleButton: {fileID: 1028383110}
+  _levelDesignId: 0
 --- !u!1 &570749281
 GameObject:
   m_ObjectHideFlags: 0
@@ -1694,14 +1695,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 4456594338480060875, guid: f07859367dd2f433e9e6d46b4317a7cf, type: 3}
-      propertyPath: Loop
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4456594338480060875, guid: f07859367dd2f433e9e6d46b4317a7cf, type: 3}
-      propertyPath: m_audioClip
-      value: 
-      objectReference: {fileID: 8300000, guid: 04d027a29b7b745e8832ec42cf7ac5d0, type: 3}
     - target: {fileID: 4456594338480060884, guid: f07859367dd2f433e9e6d46b4317a7cf, type: 3}
       propertyPath: m_Name
       value: Loader

@@ -3,7 +3,6 @@ using Apps.Runtime.Controls;
 using Apps.Runtime.Entities;
 using Apps.Runtime.Presentations;
 using Apps.Runtime.Views;
-using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -79,12 +78,6 @@ namespace Apps.Runtime.Interators
                 _source.Stop();
                 _pointPresenter.ShowResult(_source.Play);
             }
-        }
-
-        private void OnEnable()
-        {
-            // for debugging, possible to change params at runtime when re-enabling this component.
-            //Initialize(FindObjectOfType<AudioSource>(), _levelDesign);
         }
     }
 }

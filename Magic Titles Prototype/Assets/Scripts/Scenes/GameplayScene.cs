@@ -10,6 +10,7 @@ namespace Apps.Runtime.Scenes
         [SerializeField] Gameplay _gameplay;
         [SerializeField] LevelDesign _levelDesign;
         [SerializeField] Button _titleButton;
+        [SerializeField] int _levelDesignId;
 
         private void Start()
         {
@@ -25,7 +26,11 @@ namespace Apps.Runtime.Scenes
         // get audio and game stats from database.
         private void Initialize(object transitionData)
         {
-            var levelDesign = _levelDesign.GetData(transitionData != null ? (int)transitionData : 1);
+            if (transitionData != null)
+            {
+                _levelDesignId = (int)transitionData;
+            }
+            var levelDesign = _levelDesign.GetData(_levelDesignId);
             var source = Loader.Instance.AudioSource;
 
             // change clip according to settings.
@@ -38,7 +43,14 @@ namespace Apps.Runtime.Scenes
             source.time = 0;
             source.Play();
 
+            // core flow.
             _gameplay.Initialize(levelDesign, source);
+        }
+
+        //for debugging, possible to change params at runtime.
+        public void Reload()
+        {
+            Initialize(_levelDesignId);
         }
     }
 }

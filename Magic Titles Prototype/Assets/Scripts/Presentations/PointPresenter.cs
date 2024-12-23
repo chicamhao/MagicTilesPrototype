@@ -38,6 +38,7 @@ namespace Apps.Runtime.Presentations
             _view.RetryButton.onClick.AddListener(() =>
             {
                 onRetried?.Invoke();
+                _view.RetryButton.onClick.RemoveAllListeners();
                 _view.RetryButton.gameObject.SetActive(false);
                 _view.PointText.alpha = 0;
             });

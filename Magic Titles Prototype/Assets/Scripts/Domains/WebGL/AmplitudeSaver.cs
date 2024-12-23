@@ -10,7 +10,7 @@ namespace Apps.Runtime.Domains.WebGL
     public static class AmplitudeSaver
     {
         static readonly string s_path = "Assets/Resources";
-        static readonly string s_file = "amplitudess";
+        static readonly string s_file = "amplitudes";
 
         public static void Save(int id, Dictionary<float, float> amplitudes)
         {
