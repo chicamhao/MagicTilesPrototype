@@ -3,6 +3,7 @@ using Apps.Runtime.Controls;
 using Apps.Runtime.Entities;
 using Apps.Runtime.Presentations;
 using Apps.Runtime.Views;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -16,26 +17,26 @@ namespace Apps.Runtime.Interators
         [SerializeField] AmplitudeVisualizer _amplitudeVisualizer;
 
         [Header("Audio analysis & synchronous algorithms")]
-        [SerializeField] AudioSource _audioSource;
         [SerializeField] SyncProvider _syncProvider;
 
         LevelDesignData _levelDesign;
         TileInputHandler _tileInputHandler;
         PointPresenter _pointPresenter;
-
-        public void Initialize(LevelDesignData levelDesign)
+        AudioSource _source;
+        
+        public void Initialize(LevelDesignData levelDesign, AudioSource source)
         {
             Assert.IsNotNull(levelDesign);
+            Assert.IsNotNull(source);
 
             // acquire the selected music.
             _levelDesign = levelDesign;
-            _audioSource.clip = levelDesign.AudioClip;
-            _audioSource.Play();
+            _source = source;
 
             // get the synchronize algorithm.
             _syncProvider.Provide(levelDesign.SyncType)
                 // synchronize title spawning with the music.
-                .Initialize(_audioSource, _levelDesign,
+                .Initialize(source, _levelDesign,
                     SpawnTile, _amplitudeVisualizer.Animate);
 
             // input system.
@@ -43,6 +44,8 @@ namespace Apps.Runtime.Interators
 
             // scoring point system.
             _pointPresenter = new PointPresenter(_pointView);
+
+            _amplitudeVisualizer.MaxAmplitude = _levelDesign.MaxAmplitude;
         }
 
         private void SpawnTile()
@@ -67,6 +70,15 @@ namespace Apps.Runtime.Interators
         private void OnMissedTile()
         {
             // TODO game over?
+        }
+
+        private void Update()
+        {
+            if (!_source.isPlaying)
+            {
+                _source.Stop();
+                _pointPresenter.ShowResult(_source.Play);
+            }
         }
 
         private void OnEnable()

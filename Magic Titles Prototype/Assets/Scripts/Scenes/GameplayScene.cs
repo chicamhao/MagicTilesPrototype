@@ -9,35 +9,36 @@ namespace Apps.Runtime.Scenes
     {
         [SerializeField] Gameplay _gameplay;
         [SerializeField] LevelDesign _levelDesign;
-        [SerializeField] Button _closeButton;
+        [SerializeField] Button _titleButton;
 
-        private void Awake()
+        private void Start()
         {
-            if (Loader.Instance != null)
-            {
-                Initialize((int)Loader.Instance.Transition.TransitionData);
-            }
-            else
-            {
-                Initialize(0);
-            }
-            _closeButton.onClick.AddListener(OnClosed);
+            Initialize(Loader.Instance.Transition.TransitionData);
+            _titleButton.onClick.AddListener(LoadTitle);
         }
 
-        private void OnClosed()
+        private void LoadTitle()
         {
-            if (Loader.Instance != null)
-            {
-                Loader.Instance.Transition.Load(Scene.Title);
-                return;
-            }
-            new Transition().Load(Scene.Title);
+            Loader.Instance.Transition.Load(Scene.Title);
         }
 
-        // get audio and game stats from data base.
-        private void Initialize(int id)
+        // get audio and game stats from database.
+        private void Initialize(object transitionData)
         {
-            _gameplay.Initialize(_levelDesign.GetData(id));
+            var levelDesign = _levelDesign.GetData(transitionData != null ? (int)transitionData : 1);
+            var source = Loader.Instance.AudioSource;
+
+            // change clip according to settings.
+            if (source.clip != levelDesign.AudioClip)
+            {
+                source.clip = levelDesign.AudioClip;
+            }
+
+            // restart playback.
+            source.time = 0;
+            source.Play();
+
+            _gameplay.Initialize(levelDesign, source);
         }
     }
 }

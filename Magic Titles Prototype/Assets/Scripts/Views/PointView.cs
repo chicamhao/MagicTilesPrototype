@@ -8,7 +8,8 @@ namespace Apps.Runtime.Views
 {
     public sealed class PointView : MonoBehaviour
     {
-        [SerializeField] TMP_Text _pointText;
+        public Button RetryButton;
+        public TMP_Text PointText;
 
         [Header("Rank.")]
         [SerializeField] Image[] _rankImages;
@@ -20,9 +21,8 @@ namespace Apps.Runtime.Views
         [SerializeField] Vector3 _rankScale = new(.2f, .2f, 1f); // current scale
         [SerializeField] Vector3 _newRankScale = new(.25f, .25f, 1f); // target scale
 
-        [SerializeField] float _increaseDuration = 0.5f;
-        [SerializeField] float _fadeDuration = 0.3f;
-
+        [SerializeField] float _increaseDuration = 0.3f;
+        [SerializeField] float _fadeDuration = 0.15f;
         Coroutine _coroutine;
 
         private void Start()
@@ -68,7 +68,7 @@ namespace Apps.Runtime.Views
                 // interpolated point value.
                 var t = elapsedTime / _increaseDuration;
                 var displayedPoint = Mathf.RoundToInt(Mathf.Lerp(previousPoint, newPoint, t));
-                _pointText.SetText("{0}", displayedPoint);
+                PointText.SetText("{0}", displayedPoint);
 
                 // interpolate scale.
                 foreach (var image in _rankImages)
@@ -80,12 +80,11 @@ namespace Apps.Runtime.Views
             }
 
             // ensure the final point is displayed.
-            _pointText.SetText("{0}", newPoint);
+            PointText.SetText("{0}", newPoint);
             foreach (var image in _rankImages)
             {
                 image.rectTransform.localScale = _newRankScale;
             }
-            _coroutine = null;
         }
 
         private IEnumerator ChangeAlphaAsync(float startAlpha, float endAlpha, float duration)
@@ -109,7 +108,7 @@ namespace Apps.Runtime.Views
 
         private void SetAlpha(float alpha)
         {
-            _pointText.alpha = alpha;
+            PointText.alpha = alpha;
 
             foreach (var image in _rankImages)
             {

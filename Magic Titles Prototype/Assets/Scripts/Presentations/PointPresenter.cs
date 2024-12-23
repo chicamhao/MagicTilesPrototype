@@ -1,4 +1,5 @@
-﻿using Apps.Runtime.Common;
+﻿using System;
+using Apps.Runtime.Common;
 using Apps.Runtime.Domains;
 using Apps.Runtime.Views;
 using UnityEngine.Assertions;
@@ -27,6 +28,19 @@ namespace Apps.Runtime.Presentations
             var previousPoint = _currentPoint;
             _currentPoint += point;
             _view.SetValue(rank, previousPoint, _currentPoint);
+        }
+
+        public void ShowResult(Action onRetried)
+        {
+            _view.RetryButton.gameObject.SetActive(true);
+            _view.PointText.alpha = 1;
+
+            _view.RetryButton.onClick.AddListener(() =>
+            {
+                onRetried?.Invoke();
+                _view.RetryButton.gameObject.SetActive(false);
+                _view.PointText.alpha = 0;
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using TMPro;
 using UnityEngine;
 
 namespace Apps.Runtime.Domains.Algorithms
@@ -20,38 +21,44 @@ namespace Apps.Runtime.Domains.Algorithms
         [Range(250f, 3000f)]
         [SerializeField] float _vocalFrequency = 1000f;
 
+        float _rhythmAmplitude; // low frequencies for rhythm
+        float _vocalAmplitude; // high frequencies for vocals
+
         protected override void AnalyzeUpdate(float[] spectrumData)
         {
-            var rhythmAmplitude = 0f; // low frequencies for rhythm
-            var vocalAmplitude = 0f; // high frequencies for vocals
-
             // analyze spectrum
+            _rhythmAmplitude = 0f;
+            _vocalAmplitude = 0f;
             for (var i = 0; i < spectrumData.Length; i++)
             {
                 var frequency = i * AudioSettings.outputSampleRate / 2f / spectrumData.Length;
 
-                if (frequency < _rhythmFrequency)
+                if (frequency < _rhythmFrequency * _volumn)
                 {
-                    rhythmAmplitude += spectrumData[i];
+                    _rhythmAmplitude += spectrumData[i];
                 }
-                else if (frequency >= _vocalFrequency)
+                else if (frequency >= _vocalFrequency * _volumn)
                 {
-                    vocalAmplitude += spectrumData[i];
+                    _vocalAmplitude += spectrumData[i];
                 }
             }
-            _onAmplitudeChanged?.Invoke(Mathf.Max(rhythmAmplitude, vocalAmplitude));
+            ChangeAmplitude(Mathf.Max(_rhythmAmplitude, _vocalAmplitude));
 
             // detect vocals
-            if (vocalAmplitude > _vocalThreshold)
+            if (_vocalAmplitude > _vocalThreshold * _volumn)
             {
                 Spawn();
-
             }
             // detect rhythms
-            else if (rhythmAmplitude > _rhythmThreshold)
+            else if (_rhythmAmplitude > _rhythmThreshold * _volumn)
             {
                 Spawn();
             }
+        }
+
+        protected override bool Validate(float amplitude)
+        {
+            return amplitude > _vocalThreshold * _volumn || amplitude > _rhythmThreshold * _volumn;
         }
     }
 }
