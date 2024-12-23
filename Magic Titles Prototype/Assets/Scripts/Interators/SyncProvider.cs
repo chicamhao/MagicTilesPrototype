@@ -3,6 +3,7 @@ using Apps.Runtime.Common;
 using Apps.Runtime.Domains;
 using Apps.Runtime.Domains.Algorithms;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 namespace Apps.Runtime.Interators
 {
@@ -26,7 +27,8 @@ namespace Apps.Runtime.Interators
                 _ => throw new NotImplementedException(type.ToString())
             };
 
-            return _holder ?? throw new ArgumentNullException(type.ToString());
+            Assert.IsNotNull(_holder);
+            return _holder;
         }
     }
 }

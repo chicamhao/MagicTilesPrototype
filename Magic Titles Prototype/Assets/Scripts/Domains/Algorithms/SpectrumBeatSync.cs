@@ -20,12 +20,17 @@ namespace Apps.Runtime.Domains.Algorithms
                     peakAmplitude = amplitude;
                 }
             }
-            _onAmplitudeChanged?.Invoke(peakAmplitude);
+            ChangeAmplitude(peakAmplitude);
 
-            if (peakAmplitude > _amplitudeThreshold)
+            if (peakAmplitude > _amplitudeThreshold * _volumn)
             {
                 Spawn();
             }
+        }
+
+        protected override bool Validate(float amplitude)
+        {
+            return amplitude > _amplitudeThreshold * _volumn;
         }
     }
 }

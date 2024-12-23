@@ -1,5 +1,6 @@
 ﻿using System;
 using Apps.Runtime.Common;
+using Apps.Runtime.Domains.WebGL;
 using UnityEngine;
 using UnityEngine.Assertions;
 
@@ -10,14 +11,23 @@ namespace Apps.Runtime.Domains.Algorithms
         [SerializeField] FFTWindow _spectrumWindowType = FFTWindow.Rectangular;
         readonly float[] _spectrumData = new float[512]; // note: could be a performance impact?
 
-        AudioSource _source;
+        protected AudioSource _source;
         LevelDesignData _levelDesign;
-        Action _spawnAction;
+        WebGLHandler _webHandler;
 
         bool _initialized;
         float _timeToMiddle;
         float _lastSpawnTime;
-        protected Action<float> _onAmplitudeChanged;
+
+        Action _spawnAction;
+        Action<float> _onAmplitudeChanged;
+
+        protected float _volumn => _source.volume;
+
+        private void Awake()
+        {
+            _webHandler = GetComponent<WebGLHandler>();
+        }
 
         public void Initialize(
             AudioSource audioSource, LevelDesignData levelDesign,
@@ -34,23 +44,38 @@ namespace Apps.Runtime.Domains.Algorithms
 
             // make the tiles sync with the music when the tile reaches the middle of the screen.
             _timeToMiddle = Camera.main.orthographicSize / levelDesign.TileSpeed + Constants.MaxAccuracyOffset / 2;
+
+            // webGL.
+            _webHandler.Load(levelDesign.Amplitues, levelDesign.Id);
         }
 
         private void Update()
         {
-            if (_initialized && Time.time > _lastSpawnTime + _levelDesign.SpawnInterval - _timeToMiddle)
-            {
-                _source.GetSpectrumData(_spectrumData, 0, _spectrumWindowType);
-                AnalyzeUpdate(_spectrumData);
-            }
+            if (!_initialized) return;
+            _source.GetSpectrumData(_spectrumData, 0, _spectrumWindowType);
+            AnalyzeUpdate(_spectrumData);
+
+            // webGL.
+            _webHandler.HandleUpdate(_source, _source.time,
+                ChangeAmplitude, Spawn, Validate);
         }
 
         protected abstract void AnalyzeUpdate(float[] spectrumData);
+        protected abstract bool Validate(float amplitude);
 
         protected void Spawn()
         {
-            _spawnAction?.Invoke();
-            _lastSpawnTime = Time.time;
+            if (Time.time > _lastSpawnTime + _levelDesign.SpawnInterval - _timeToMiddle)
+            {
+                _spawnAction?.Invoke();
+                _lastSpawnTime = Time.time;
+            }
+        }
+
+        protected void ChangeAmplitude(float amplitude)
+        {
+            _webHandler.HandleAmplitude(amplitude, _source.time);
+            _onAmplitudeChanged.Invoke(amplitude / _source.volume);
         }
 
         public void Dispose()
