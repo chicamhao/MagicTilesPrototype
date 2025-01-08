@@ -16,10 +16,17 @@ namespace Apps.Runtime.Common
     [Serializable]
     public sealed class LevelDesignData
     {
+        public int Id => _id;
+        [SerializeField] int _id;
+
         public AudioClip AudioClip => _audioClip;
         [SerializeField] AudioClip _audioClip;
 
+        public byte BPM => _BPM;
         [SerializeField] byte _BPM;
+
+        public float MaxAmplitude => _maxAmplitude;
+        [SerializeField] float _maxAmplitude;
 
         public SyncType SyncType => _syncType;
         [SerializeField] SyncType _syncType;
@@ -31,5 +38,8 @@ namespace Apps.Runtime.Common
         public float SpawnInterval => _spawnInterval;
         [Range(1f, 3f)]
         [SerializeField] float _spawnInterval;
+
+        public string Amplitues => _amplitudes;
+        [SerializeField, TextArea] string _amplitudes;
     }
 }
